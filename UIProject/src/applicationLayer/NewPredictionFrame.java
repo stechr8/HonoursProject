@@ -52,6 +52,7 @@ public class NewPredictionFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		setLocationRelativeTo(null);
 		
 		JLabel lblPredictor = new JLabel("PREDICTOR");
 		lblPredictor.setFont(new Font("Rockwell", Font.PLAIN, 38));
