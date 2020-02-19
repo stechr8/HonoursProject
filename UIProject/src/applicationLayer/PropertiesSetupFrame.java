@@ -6,6 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import businessLayer.PropertiesLogic;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -104,13 +107,15 @@ public class PropertiesSetupFrame extends JFrame {
 							String url = txtUrl.getText().trim();
 
 							if(Pattern.matches(regex, url)) {
+								
+								PropertiesLogic pLogic = new PropertiesLogic();
 
-								writePropertiesFile(url, txtUsername.getText(), txtPassword.getText());
+								pLogic.writePropertiesFile(url, txtUsername.getText(), txtPassword.getText());
 
 							}
 							else{
 
-								throw new Exception("Table not defined in URL: " + url);
+								throw new Exception("Incorrect URL format." + "\n" + "e.g \"hostname/database\"");
 
 							}
 						}
@@ -158,34 +163,5 @@ public class PropertiesSetupFrame extends JFrame {
 
 	}
 
-	private void writePropertiesFile(String url, String username, String password) {
-
-		try {
-
-			URL main = SignInFrame.class.getResource("SignInFrame.class");
-			File javaFile = new File(main.getPath());
-
-			String absolutePath = javaFile.getAbsolutePath();
-			String javaFileFolderPath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
-			String dbFilePath = javaFileFolderPath+"\\db.properties";
-
-			Properties prop = new Properties();
-
-			// set the properties value
-			prop.setProperty("db.url", "jdbc:mysql://" + url);
-			prop.setProperty("db.user", username);
-			prop.setProperty("db.password", password);
-
-			OutputStream output = new FileOutputStream(dbFilePath);
-
-			// save properties to project root folder
-			prop.store(output, null);
-
-			System.out.println(prop);
-
-		} catch (IOException io) {
-			io.printStackTrace();
-		}
-
-	}
+	
 }

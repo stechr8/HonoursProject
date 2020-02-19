@@ -6,6 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import businessLayer.PropertiesLogic;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -108,20 +111,17 @@ public class SignInFrame extends JFrame {
 	
 	private static boolean propertyFileExists() {
 		
-		URL main = SignInFrame.class.getResource("SignInFrame.class");
-		File javaFile = new File(main.getPath());
-
-		String absolutePath = javaFile.getAbsolutePath();
-		String javaFileFolderPath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
-		String dbFilePath = javaFileFolderPath+"\\db.properties";
+		PropertiesLogic pLogic = new PropertiesLogic();
+		
+		String dbFilePath = pLogic.getPropertiesFilePath();
 
 		File dbFile = new File(dbFilePath);
 		if(dbFile.exists() && !dbFile.isDirectory()) { 
-		    // this is not the first time running the program
+		    // signifies first time running the program
 			return true;
 		}
 		else{
-		    //this is the first time running the program
+		    //not first time running the program
 			return false;
 		}
 	}
