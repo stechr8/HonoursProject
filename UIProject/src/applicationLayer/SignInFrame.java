@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
+
 import businessLayer.EncryptionLogic;
 import businessLayer.PropertiesLogic;
 import businessLayer.UserAuthenticationLogic;
@@ -55,7 +57,7 @@ public class SignInFrame extends JFrame {
 					}
 					else {
 						
-						int choice = showDialog(frame);
+						int choice = showAuthenticationDialog(frame);
 						
 						if(choice == 0) {
 							PropertiesSetupFrame propFrame = new PropertiesSetupFrame();
@@ -115,16 +117,34 @@ public class SignInFrame extends JFrame {
 					
 					UserAuthenticationLogic userAuthLogic = new UserAuthenticationLogic();
 					
-					userAuthLogic.signInUser(txtUsername.getText(), txtPassword.getPassword());
-					
-					HomeFrame homeFrame = new HomeFrame();
-					homeFrame.setVisible(true);
-					SignInFrame.this.setVisible(false);
-					
-				} catch (Exception e1) {
+					String password = new String(txtPassword.getPassword());
+
+					if(userAuthLogic.signInUser(txtUsername.getText(), password)) {
+						
+						HomeFrame homeFrame = new HomeFrame();
+						homeFrame.setVisible(true);
+						SignInFrame.this.setVisible(false);
+						
+					}
+					else {
+						throw new Exception("Incorrect details entered");
+					}
+				}catch(FileNotFoundException fnfException) {
 					
 					JOptionPane.showMessageDialog(SignInFrame.this,
-							e1.getMessage(),
+							"Database Authentication file missing!"
+							+ "\nFile may have been deleted or changed and is a sign of a security breach."
+									+ "\n"
+							+ "\nYou will now be asked to re-perform setup.",
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+					
+					showAuthenticationDialog(SignInFrame.this);
+					
+				} catch (Exception generalException) {
+					
+					JOptionPane.showMessageDialog(SignInFrame.this,
+							generalException.getMessage(),
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					
@@ -157,7 +177,7 @@ public class SignInFrame extends JFrame {
 		}
 	}
 	
-	private static int showDialog(SignInFrame frame) {
+	private static int showAuthenticationDialog(SignInFrame frame) {
 		
 		//Custom button text
 		Object[] options = {"Continue",

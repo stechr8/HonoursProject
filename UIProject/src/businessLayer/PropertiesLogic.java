@@ -36,7 +36,7 @@ public class PropertiesLogic {
 			// set the properties value
 			
 			//TODO set up encryption
-			prop.setProperty("db.url", url);
+			prop.setProperty("db.url", "jdbc:mysql://" + url);
 			prop.setProperty("db.user", username);
 			prop.setProperty("db.password", password);
 
