@@ -27,13 +27,14 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JPasswordField;
 
 public class PropertiesSetupFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtUrl;
 	private JTextField txtUsername;
-	private JTextField txtPassword;
+	private JPasswordField txtPassword;
 
 	/**
 	 * Launch the application.
@@ -87,18 +88,19 @@ public class PropertiesSetupFrame extends JFrame {
 		txtUsername.setBounds(104, 59, 101, 20);
 		contentPane.add(txtUsername);
 
-		txtPassword = new JTextField();
-		txtPassword.setColumns(10);
-		txtPassword.setBounds(104, 84, 101, 20);
-		contentPane.add(txtPassword);
-
 		JButton btnFinish = new JButton("Finish");
 		btnFinish.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
 				try {
 
-					if(!txtUrl.getText().isEmpty() && !txtUsername.getText().isEmpty() && !txtPassword.getText().isEmpty()) {
+					if(!txtUrl.getText().isEmpty() && !txtUsername.getText().isEmpty()) {
+						
+						String password = new String(txtPassword.getPassword());
+						
+						if(password.isEmpty()){
+							throw new Exception("Please fill out all fields");
+						}
 
 						if(!txtUrl.getText().trim().contains(" ")) {
 
@@ -110,7 +112,13 @@ public class PropertiesSetupFrame extends JFrame {
 								
 								PropertiesLogic pLogic = new PropertiesLogic();
 
-								pLogic.writePropertiesFile(url, txtUsername.getText(), txtPassword.getText());
+								pLogic.writePropertiesFile(url, txtUsername.getText(), password);
+								
+								SignInFrame signIn = new SignInFrame();
+								
+								signIn.setVisible(true);
+								
+								PropertiesSetupFrame.this.dispose();
 
 							}
 							else{
@@ -157,11 +165,13 @@ public class PropertiesSetupFrame extends JFrame {
 		lblUrlLead.setBackground(Color.LIGHT_GRAY);
 		lblUrlLead.setBounds(104, 34, 69, 20);
 		contentPane.add(lblUrlLead);
+		
+		txtPassword = new JPasswordField();
+		txtPassword.setBounds(104, 84, 101, 20);
+		contentPane.add(txtPassword);
 
 
 
 
 	}
-
-	
 }

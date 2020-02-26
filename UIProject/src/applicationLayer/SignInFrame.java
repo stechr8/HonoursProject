@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.EmptyStackException;
 import java.util.regex.Pattern;
 import javax.swing.JPasswordField;
@@ -129,19 +130,52 @@ public class SignInFrame extends JFrame {
 					else {
 						throw new Exception("Incorrect details entered");
 					}
-				}catch(FileNotFoundException fnfException) {
+				}catch(IOException ioException) {
 					
 					JOptionPane.showMessageDialog(SignInFrame.this,
 							"Database Authentication file missing!"
-							+ "\nFile may have been deleted or changed and is a sign of a security breach."
+							+ "\nFile may have been deleted or changed."
 									+ "\n"
 							+ "\nYou will now be asked to re-perform setup.",
 							"Error",
 							JOptionPane.ERROR_MESSAGE);
 					
-					showAuthenticationDialog(SignInFrame.this);
+					int choice = showAuthenticationDialog(SignInFrame.this);
 					
-				} catch (Exception generalException) {
+					if(choice == 0) {
+						PropertiesSetupFrame propFrame = new PropertiesSetupFrame();
+						SignInFrame.this.dispose();
+						propFrame.setVisible(true);
+					}
+					else {
+						System.exit(ABORT);
+					}
+					
+					
+					
+				} catch(SQLInvalidAuthorizationSpecException sqlException) {
+					
+					JOptionPane.showMessageDialog(SignInFrame.this,
+							"Database Authentication failed!"
+							+ "\nNo connection could be made to the database due to incorrect authentication details."
+									+ "\n"
+							+ "\nYou will now be asked to re-perform setup.",
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+					
+					int choice = showAuthenticationDialog(SignInFrame.this);
+					
+					if(choice == 0) {
+						PropertiesSetupFrame propFrame = new PropertiesSetupFrame();
+						SignInFrame.this.dispose();
+						propFrame.setVisible(true);
+					}
+					else {
+						System.exit(ABORT);
+					}
+					
+				}
+				catch (Exception generalException) {
 					
 					JOptionPane.showMessageDialog(SignInFrame.this,
 							generalException.getMessage(),

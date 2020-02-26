@@ -1,6 +1,7 @@
 package businessLayer;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -10,7 +11,7 @@ public class UserAuthenticationLogic {
 	
 	UserAuthDatabaseCommands userAuthDB = new UserAuthDatabaseCommands();
 	
-	public boolean signInUser(String inputUsername, String inputPassword) throws Exception, FileNotFoundException{
+	public boolean signInUser(String inputUsername, String inputPassword) throws Exception, IOException, SQLInvalidAuthorizationSpecException{
 		
 				String savedPassword = userAuthDB.getUserPassword(inputUsername);
 

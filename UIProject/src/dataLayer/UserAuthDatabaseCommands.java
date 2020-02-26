@@ -8,7 +8,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLClientInfoException;
 import java.sql.SQLException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.Properties;
 
 import businessLayer.PropertiesLogic;
@@ -17,7 +19,7 @@ public class UserAuthDatabaseCommands{
 
 	PropertiesLogic pLogic = new PropertiesLogic();
 
-	public String getUserPassword(String suppliedUsername) throws FileNotFoundException{
+	public String getUserPassword(String suppliedUsername) throws IOException, SQLInvalidAuthorizationSpecException{
 		
 		String password = null;
 
@@ -57,6 +59,12 @@ public class UserAuthDatabaseCommands{
 			results.first();
 
 			password = results.getString("password");
+			
+			statement.close();
+			
+			conn.close();
+			
+			inputStream.close();
 
 		}
 		catch (ClassNotFoundException cnf)
@@ -67,14 +75,13 @@ public class UserAuthDatabaseCommands{
 		catch (SQLException sqe)
 		{
 			System.out.println("Error performing SQL Query");
-			System.out.println(sqe.getMessage());
+			System.out.println(sqe.getMessage() + "\n" + sqe.getErrorCode());
+			
+			if(sqe.getErrorCode() == 1045) {
+				throw new SQLInvalidAuthorizationSpecException("Connection could not be made to the database");
+			}
 		}
-		catch(IOException e) {
-
-			System.out.println("IOException raised");
-			System.err.println(e.getMessage());
-
-		}
+		
 
 		return password;
 	}

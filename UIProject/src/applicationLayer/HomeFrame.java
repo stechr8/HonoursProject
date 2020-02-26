@@ -189,6 +189,19 @@ public class HomeFrame extends JFrame {
 		JButton btnViewHistory = new JButton("View History");
 		btnViewHistory.setBounds(250, 110, 104, 23);
 		contentPane.add(btnViewHistory);
+		
+		JButton btnSignOut = new JButton("Sign Out");
+		btnSignOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				SignInFrame signIn = new SignInFrame();
+				signIn.setVisible(true);
+				HomeFrame.this.dispose();
+				
+			}
+		});
+		btnSignOut.setBounds(250, 144, 104, 23);
+		contentPane.add(btnSignOut);
 
 	}
 }
