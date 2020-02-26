@@ -1,10 +1,12 @@
 package businessLayer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.Properties;
 
 import applicationLayer.SignInFrame;
@@ -17,9 +19,17 @@ public class PropertiesLogic {
 			
 			EncryptionLogic encLogic = new EncryptionLogic();
 			
-			//String encUrl = encLogic.encrypt("jdbc:mysql://" + url);
-			//String encUsername = encLogic.encrypt(username);
-			//String encPassword = encLogic.encrypt(password);
+			try {
+				encLogic.createKeystore();
+			}
+			catch(FileAlreadyExistsException e) {
+				System.out.println("Keystore already exists without properties file\n"
+						+ "The previous properties file may have been deleted or tampered with.");
+			}
+			
+			//String encUrl = new String(encLogic.encrypt("jdbc:mysql://" + url));
+			//String encUsername = new String(encLogic.encrypt(username));
+			//String encPassword = new String(encLogic.encrypt(password));
 
 			Properties prop = new Properties();
 
@@ -37,8 +47,14 @@ public class PropertiesLogic {
 
 			System.out.println(prop);
 
-		} catch (IOException io) {
-			io.printStackTrace();
+		} catch(FileNotFoundException e) {
+		
+			System.out.println("Properties Logic - writePropFile: " + e.getMessage());
+			
+		}
+		catch (IOException e) {
+	
+			System.out.println(e.getMessage());
 		}
 
 	}

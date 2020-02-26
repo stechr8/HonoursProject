@@ -1,13 +1,14 @@
 package applicationLayer;
-import java.awt.BorderLayout;
-import java.awt.Dialog;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import businessLayer.EncryptionLogic;
 import businessLayer.PropertiesLogic;
+import businessLayer.UserAuthenticationLogic;
+import dataLayer.UserAuthDatabaseCommands;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,13 +20,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import java.io.*;
-import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
+import java.util.EmptyStackException;
+import java.util.regex.Pattern;
+import javax.swing.JPasswordField;
 
 public class SignInFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField txtUsername;
-	private JTextField txtPassword;	
+	private JPasswordField txtPassword;
 
 	/**
 	 * Launch the application.
@@ -36,9 +40,20 @@ public class SignInFrame extends JFrame {
 				try {
 					SignInFrame frame = new SignInFrame();
 					
-					if(propertyFileExists()) {
+					if(propertiesFileExists()) {
+
+						EncryptionLogic encLogic = new EncryptionLogic();
+
+						try {
+							encLogic.createKeystore();
+						}
+						catch(FileAlreadyExistsException e) {
+							System.out.println("Keystore exists");
+						}
+
 						frame.setVisible(true);
-					}else {
+					}
+					else {
 						
 						int choice = showDialog(frame);
 						
@@ -90,26 +105,42 @@ public class SignInFrame extends JFrame {
 		contentPane.add(txtUsername);
 		txtUsername.setColumns(10);
 		
-		txtPassword = new JTextField();
-		txtPassword.setColumns(10);
-		txtPassword.setBounds(148, 186, 86, 20);
-		contentPane.add(txtPassword);
-		
 		JButton btnSignIn = new JButton("Sign In");
 		btnSignIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				HomeFrame homeFrame = new HomeFrame();
-				homeFrame.setVisible(true);
-				SignInFrame.this.setVisible(false);
+				try {
+					
+					validateInput();
+					
+					UserAuthenticationLogic userAuthLogic = new UserAuthenticationLogic();
+					
+					userAuthLogic.signInUser(txtUsername.getText(), txtPassword.getPassword());
+					
+					HomeFrame homeFrame = new HomeFrame();
+					homeFrame.setVisible(true);
+					SignInFrame.this.setVisible(false);
+					
+				} catch (Exception e1) {
+					
+					JOptionPane.showMessageDialog(SignInFrame.this,
+							e1.getMessage(),
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+					
+				}
 				
 			}
 		});
 		btnSignIn.setBounds(147, 235, 89, 23);
 		contentPane.add(btnSignIn);
+		
+		txtPassword = new JPasswordField();
+		txtPassword.setBounds(148, 186, 86, 20);
+		contentPane.add(txtPassword);
 	}
 	
-	private static boolean propertyFileExists() {
+	private static boolean propertiesFileExists() {
 		
 		PropertiesLogic pLogic = new PropertiesLogic();
 		
@@ -144,5 +175,26 @@ public class SignInFrame extends JFrame {
 		    options[0]);
 		
 		return choice;
+	}
+	
+	private void validateInput() throws Exception{
+		
+		if(!txtUsername.getText().isEmpty() && txtPassword.getPassword().length != 0) {
+			
+			String regex = "\\w+";
+			
+			if(!Pattern.matches(regex, txtUsername.getText())) {
+				
+				throw new Exception("Invalid Username");
+				
+			}
+			
+		}
+		else {
+			
+			throw new Exception("Please fill out all fields");
+			
+		}
+		
 	}
 }

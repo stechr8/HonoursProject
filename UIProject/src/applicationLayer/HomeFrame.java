@@ -19,10 +19,14 @@ import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormSpecs;
 import com.jgoodies.forms.layout.RowSpec;
+
+import businessLayer.EncryptionLogic;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.awt.event.ActionEvent;
 
 public class HomeFrame extends JFrame {
@@ -185,5 +189,6 @@ public class HomeFrame extends JFrame {
 		JButton btnViewHistory = new JButton("View History");
 		btnViewHistory.setBounds(250, 110, 104, 23);
 		contentPane.add(btnViewHistory);
+
 	}
 }
