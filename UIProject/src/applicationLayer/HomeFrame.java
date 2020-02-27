@@ -183,6 +183,15 @@ public class HomeFrame extends JFrame {
 		contentPane.add(btnRunNewPred);
 		
 		JButton btnSettings = new JButton("Settings");
+		btnSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				SettingsFrame settingsFrame = new SettingsFrame();
+				settingsFrame.setVisible(true);
+				HomeFrame.this.dispose();
+				
+			}
+		});
 		btnSettings.setBounds(250, 76, 104, 23);
 		contentPane.add(btnSettings);
 		

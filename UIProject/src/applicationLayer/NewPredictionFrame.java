@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollBar;
@@ -20,6 +21,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.Rectangle;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.awt.event.ActionEvent;
 
 public class NewPredictionFrame extends JFrame {
 
@@ -76,6 +80,20 @@ public class NewPredictionFrame extends JFrame {
 		pnlUploadPath.add(lblUploadPath);
 		
 		JButton btnBrowse = new JButton("Browse...");
+		btnBrowse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String filename = File.separator+"tmp";
+				JFileChooser fc = new JFileChooser(filename);
+
+				// Show open dialog
+				fc.showOpenDialog(NewPredictionFrame.this);
+				File selFile = fc.getSelectedFile();
+				
+				System.out.println(selFile.getAbsolutePath());
+				
+			}
+		});
 		btnBrowse.setBounds(475, 74, 89, 23);
 		contentPane.add(btnBrowse);
 		
@@ -111,5 +129,18 @@ public class NewPredictionFrame extends JFrame {
 		tblOutput.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		tblOutput.setEnabled(false);
 		scrollPane.setViewportView(tblOutput);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				HomeFrame homeFrame = new HomeFrame();
+				homeFrame.setVisible(true);
+				NewPredictionFrame.this.dispose();
+				
+			}
+		});
+		btnBack.setBounds(10, 415, 89, 23);
+		contentPane.add(btnBack);
 	}
 }

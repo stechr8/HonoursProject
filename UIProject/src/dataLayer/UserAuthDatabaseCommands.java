@@ -77,9 +77,10 @@ public class UserAuthDatabaseCommands{
 			System.out.println("Error performing SQL Query");
 			System.out.println(sqe.getMessage() + "\n" + sqe.getErrorCode());
 			
-			if(sqe.getErrorCode() == 1045) {
+			if(sqe.getErrorCode() == 1045 || sqe.getErrorCode() == 1049) {
 				throw new SQLInvalidAuthorizationSpecException("Connection could not be made to the database");
 			}
+			
 		}
 		
 
