@@ -11,6 +11,8 @@ import tensorflow as tf
 from tensorflow import feature_column
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
+from numpy import array
+from numpy import mean
 
 # A utility method to create a tf.data dataset from a Pandas Dataframe
 def df_to_dataset(dataframe, shuffle=True, batch_size=32):
@@ -23,15 +25,18 @@ def df_to_dataset(dataframe, shuffle=True, batch_size=32):
   return ds
 
 
+
+
+
 tf.keras.backend.clear_session()
 
 #read in csv
-data = pd.read_csv('E:/stech/Documents/Uni/4th Year/Honours/Data/H2 Clean.csv')
+data = pd.read_csv('E:/stech/Documents/Uni/4thYear/Honours/Data/H2 Clean.csv')
 
 #print(data)
 
 #######READ IN PREDICTION CODE##########
-pdf = pd.read_csv('E:/stech/Documents/Uni/4th Year/Honours/Data/H1 Clean.csv')
+pdf = pd.read_csv('E:/stech/Documents/Uni/4thYear/Honours/Data/H1Clean.csv')
 pd.set_option('max_columns', None)
 
 #change null values to -1
@@ -135,7 +140,7 @@ feature_columns.append(arrivalMonth_one_hot)
 
 
 countryNames = feature_column.categorical_column_with_vocabulary_file(
-    'Country', 'E:/stech/Documents/Uni/4th Year/Honours/CountryNames.csv', vocabulary_size=None, dtype=tf.dtypes.string,
+    'Country', 'E:/stech/Documents/Uni/4thYear/Honours/CountryNames.csv', vocabulary_size=None, dtype=tf.dtypes.string,
     default_value=None, num_oov_buckets=0
 )
 
@@ -153,61 +158,46 @@ for header in ['LeadTime', 'ArrivalDateWeekNumber', 'StaysInWeekendNights',
 
 feature_layer = tf.keras.layers.DenseFeatures(feature_columns)
 
-model = tf.keras.Sequential([
-  feature_layer,
+
+
+avg_acc_list = list()
+avg_loss_list = list()
+
+for i in range(1):
+
+    model = tf.keras.Sequential([
+    feature_layer,
   layers.Dense(16, input_dim=14, activation='relu'),
   layers.Dense(16, activation='relu'),
   layers.Dense(1, activation='sigmoid')
-])
+  ])
 
-model.compile(optimizer='adam',
-              loss='binary_crossentropy',
-              metrics=['accuracy'])
+    model.compile(optimizer='adam',
+        loss='binary_crossentropy',
+        metrics=['accuracy'])
 
-history = model.fit(train_ds,
-          validation_data=val_ds,
-          epochs=10)
+    history = model.fit(train_ds,
+        validation_data=val_ds,
+        epochs=10, verbose=0)
+    
+    avg_acc_list.append(history.history['val_accuracy'][-1])
+    avg_loss_list.append(history.history['val_loss'][-1])
 
+plt.plot(avg_acc_list)    
+plt.title('Model accuracy')
+plt.ylabel('Validation Accuracy')
+plt.xlabel('Iteration')
+
+plt.show()
+
+plt.plot(avg_loss_list)    
+plt.title('Model loss')
+plt.ylabel('Validation Loss')
+plt.xlabel('Iteration')
+
+plt.show()
 
 print(model.predict_proba(pset, batch_size=None))
-
-# Plot training & validation accuracy values
-plt.plot(history.history['accuracy'])
-plt.plot(history.history['val_accuracy'])
-plt.title('Model accuracy')
-plt.ylabel('Accuracy')
-plt.xlabel('Epoch')
-plt.legend(['Train', 'Test'], loc='upper left')
-plt.show()
-
-# Plot training & validation loss values
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('Model loss')
-plt.ylabel('Loss')
-plt.xlabel('Epoch')
-plt.legend(['Train', 'Test'], loc='upper left')
-plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#process_attributes(data)
-
 
 
 if __name__ == '__main__':

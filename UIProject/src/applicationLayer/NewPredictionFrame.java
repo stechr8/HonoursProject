@@ -16,6 +16,9 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import businessLayer.PythonLinkLogic;
+
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.ImageIcon;
@@ -76,7 +79,7 @@ public class NewPredictionFrame extends JFrame {
 		pnlUploadPath.setBounds(144, 74, 322, 20);
 		contentPane.add(pnlUploadPath);
 		
-		JLabel lblUploadPath = new JLabel("C:/Documents/Tester.csv");
+		JLabel lblUploadPath = new JLabel("");
 		pnlUploadPath.add(lblUploadPath);
 		
 		JButton btnBrowse = new JButton("Browse...");
@@ -90,7 +93,11 @@ public class NewPredictionFrame extends JFrame {
 				fc.showOpenDialog(NewPredictionFrame.this);
 				File selFile = fc.getSelectedFile();
 				
-				System.out.println(selFile.getAbsolutePath());
+				lblUploadPath.setText(selFile.getAbsolutePath());
+				
+				PythonLinkLogic pyLogic = new PythonLinkLogic();
+				
+				pyLogic.executePythonScript(selFile.getAbsolutePath());
 				
 			}
 		});
