@@ -34,8 +34,15 @@ public class PythonLinkLogic {
 			
 			String line = "";
 			while((line = reader.readLine()) != null){
-				System.out.println(line);
+				
+				line = line.replaceAll("[\\[\\]]", "");
+				line = line.trim();
+				predictionArrayList.add(line);
+				
 			}
+			
+			return predictionArrayList;
+			
 		}catch(Exception e) {
 			System.out.println("Exception Raised" + e.toString());
 		}
