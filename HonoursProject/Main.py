@@ -13,6 +13,7 @@ from tensorflow.keras import layers
 import matplotlib.pyplot as plt
 from numpy import array
 from numpy import mean
+import sys
 
 # A utility method to create a tf.data dataset from a Pandas Dataframe
 def df_to_dataset(dataframe, shuffle=True, batch_size=32):
@@ -31,12 +32,12 @@ def df_to_dataset(dataframe, shuffle=True, batch_size=32):
 tf.keras.backend.clear_session()
 
 #read in csv
-data = pd.read_csv('E:/stech/Documents/Uni/4thYear/Honours/Data/H2 Clean.csv')
+data = pd.read_csv(sys.argv[2])
 
 #print(data)
 
 #######READ IN PREDICTION CODE##########
-pdf = pd.read_csv('E:/stech/Documents/Uni/4thYear/Honours/Data/H1Clean.csv')
+pdf = pd.read_csv(sys.argv[1])
 pd.set_option('max_columns', None)
 
 #change null values to -1
@@ -53,9 +54,6 @@ data[['Agent', 'Company']] = data[['Agent', 'Company']].fillna(-1)
 
 train, test = train_test_split(data, test_size=0.2)
 train, val = train_test_split(train, test_size=0.2)
-print(len(train), 'train examples')
-print(len(val), 'validation examples')
-print(len(test), 'test examples')
 
 batch_size = 32
 train_ds = df_to_dataset(train, batch_size=batch_size)

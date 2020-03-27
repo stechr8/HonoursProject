@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class PythonLinkLogic {
@@ -20,9 +22,11 @@ public class PythonLinkLogic {
 
 		String absolutePath = javaFile.getAbsolutePath();
 		String javaFileFolderPath = absolutePath.substring(0,absolutePath.lastIndexOf(File.separator));
+		String binFolderPath = javaFileFolderPath.substring(0,javaFileFolderPath.lastIndexOf(File.separator));
+		String homeFileFolderPath = binFolderPath.substring(0,binFolderPath.lastIndexOf(File.separator));
 		
-		String pythonFilePath = javaFileFolderPath + "\\ModelFolder\\Model.py";
-		String csvTrainPath = javaFileFolderPath + "\\ModelFolder\\H2Clean.csv";
+		String pythonFilePath = homeFileFolderPath + "\\ModelFolder\\Main.py";
+		String csvTrainPath = homeFileFolderPath + "\\ModelFolder\\H2Clean.csv";
 		
 		try{
 			
@@ -32,15 +36,20 @@ public class PythonLinkLogic {
 			InputStream stdout = process.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout,StandardCharsets.UTF_8));
 			
+			DecimalFormat decFormat = new DecimalFormat("#.##");
+			decFormat.setRoundingMode(RoundingMode.HALF_UP);
+			
 			String line = "";
 			while((line = reader.readLine()) != null){
 				
 				line = line.replaceAll("[\\[\\]]", "");
 				line = line.trim();
-				predictionArrayList.add(line);
+				Double dblLine = Double.parseDouble(line) * 100;
+				predictionArrayList.add(decFormat.format(dblLine));
+				
+				System.out.println(dblLine);
 				
 			}
-			
 			return predictionArrayList;
 			
 		}catch(Exception e) {

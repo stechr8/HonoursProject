@@ -9,7 +9,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
-import java.awt.List;
 
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -24,11 +23,12 @@ import businessLayer.CSVReadingLogic;
 import businessLayer.PythonLinkLogic;
 
 import javax.swing.JScrollPane;
-import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
 
 public class NewPredictionFrame extends JFrame {
@@ -116,37 +116,36 @@ public class NewPredictionFrame extends JFrame {
 				try {
 					PythonLinkLogic pyLogic = new PythonLinkLogic();
 					
-					/*ArrayList<String> predList = pyLogic.executePythonScript(lblUploadPath.getText());
-					
-					if(predList == null) {
-						throw new Exception("There has been an error reading in the data."
-								+ "\nPlease review your data and ensure only the 'Agent' and 'Company' fields\n"
-								+ "contain NULL values.");
-					}*/
+					ArrayList<String> predList = pyLogic.executePythonScript(lblUploadPath.getText());
 					
 					CSVReadingLogic csvLogic = new CSVReadingLogic();
 					
 					ArrayList<String[]> csvEntries = csvLogic.readCsvForTable(lblUploadPath.getText());
 					
 		            String[] columnNames = new String[] {
-		            		"IsCanceled", "LeadTime", "ArrivalDateYear", "ArrivalDateMonth", "ArrivalDateWeekNumber", "ArrivalDateDayOfMonth",
+		            		"Chance of Attendance (%)", "LeadTime", "ArrivalDateYear", "ArrivalDateMonth", "ArrivalDateWeekNumber", "ArrivalDateDayOfMonth",
 		            		"StaysInWeekendNights", "StaysInWeekNights", "Adults", "Children", "Babies", "Meal", "Country", "MarketSegment", "DistributionChannel",
 		            		"IsRepeatedGuest", "PreviousCancellations", "PreviousBookingsNotCanceled", "ReservedRoomType", "AssignedRoomType", "BookingChanges",
 		            		"DepositType", "Agent", "Company", "DaysInWaitingList", "CustomerType",	"ADR", "RequiredCarParkingSpaces", "TotalOfSpecialRequests",
 		            		"ReservationStatus", "ReservationStatusDate"
 
 		                };
-
+		            
 		            Object[][] tableContent = new Object[csvEntries.size()][columnNames.length];
 
 		            for(int i = 0; i < csvEntries.size(); i++) {
 		            	for(int k = 0; k < columnNames.length; k++) {
-		            		tableContent[i][k] = csvEntries.get(i)[k];
-		            	}
-		                
+		            			tableContent[i][k] = csvEntries.get(i)[k];
+		            		}
+
+		            }
+		            
+		            for(int i = 0; i < csvEntries.size(); i++) {
+		            	tableContent[i][0] = predList.get(i);
 		            }
 
 		            tblOutput.setModel(new DefaultTableModel(tableContent, columnNames));
+		            
 		            tblOutput.setVisible(true);
 		            panel.setVisible(false);
 		            panel.setEnabled(false);
@@ -206,11 +205,6 @@ public class NewPredictionFrame extends JFrame {
 		});
 		btnBrowse.setBounds(475, 74, 89, 23);
 		contentPane.add(btnBrowse);
-		
-		JLabel lblTableBg = new JLabel("");
-		lblTableBg.setBounds(0, 0, 450, 267);
-		lblTableBg.setIcon(new ImageIcon("C:\\Users\\stech\\git\\HonoursProject\\UIProject\\res\\scrollPaneBG.png"));
-		panel.add(lblTableBg);
 		
 		JButton btnBack = new JButton("Back");
 		btnBack.addActionListener(new ActionListener() {
