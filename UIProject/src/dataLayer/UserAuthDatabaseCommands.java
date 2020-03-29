@@ -42,7 +42,7 @@ public class UserAuthDatabaseCommands{
 
 			//Establish connection to the database
 			Connection conn = DriverManager
-					.getConnection(prop.getProperty("db.url") + "?user=" + prop.getProperty("db.user") + "&password=" + prop.getProperty("db.password"));
+					.getConnection(prop.getProperty("db.url") + "?user=" + prop.getProperty("db.user") + "&password=" + prop.getProperty("db.password") + "&serverTimezone=UTC");
 
 			// Create query to get the product from the database matching the product id
 			String query = "SELECT password FROM userstable WHERE username = ?";

@@ -24,11 +24,5 @@ public class UserAuthenticationLogic {
 				return matched;
 		
 	}
-	
-	public void registerUser(String username, String password) {
-		
-		String generatedSecuredPasswordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
-		
-	}
 
 }

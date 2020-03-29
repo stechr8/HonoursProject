@@ -19,16 +19,19 @@ import javax.swing.JFileChooser;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.opencsv.CSVWriter;
+
 import businessLayer.CSVReadingLogic;
+import businessLayer.PredictionDatabaseLogic;
 import businessLayer.PythonLinkLogic;
 
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
 
 public class NewPredictionFrame extends JFrame {
@@ -109,9 +112,108 @@ public class NewPredictionFrame extends JFrame {
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
+		
+		JButton btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				int noOfRows = tblOutput.getRowCount();
+				int noOfCols = tblOutput.getColumnCount();
+				
+				FileWriter fWriter;
+				ArrayList<String> entries = new ArrayList<String>();
+				
+				int cancellations = 0;
+				
+				try {
+					
+					String directory = lblUploadPath.getText().substring(0, lblUploadPath.getText().lastIndexOf(File.separator));
+					
+					fWriter = new FileWriter(directory + "\\Prediction.csv");
+					
+					CSVWriter writer = new CSVWriter(fWriter);
+				
+					for(int i = 0; i < noOfRows; i++) {
+						for(int j = 0; j < noOfCols; j++) {
+							//get each cell and add to ArrayList
+							String entry = tblOutput.getModel().getValueAt(i, j).toString();
+							//if entry is of IsCancelled and is less than 50%
+							if(j == 0 && Double.parseDouble(entry) < 50) {
+								cancellations++;
+							}
+						    entries.add(entry);
+						}
+						
+						//Convert to string array
+				        String[] array = entries.toArray(new String[entries.size()]);
+						writer.writeNext(array);
+				     
+					}
+					
+				writer.close();
+				
+				
+				PredictionDatabaseLogic predDbLogic = new PredictionDatabaseLogic();
+				
+				predDbLogic.saveToDB(noOfRows, cancellations);
+				
+				JOptionPane.showMessageDialog(NewPredictionFrame.this,
+						"File Saved to '" + directory + "'",
+						"Success!",
+						JOptionPane.ERROR_MESSAGE);
+				
+				} 
+				catch(IOException ioException) {
+					
+					JOptionPane.showMessageDialog(NewPredictionFrame.this,
+							ioException.getMessage(),
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				catch(SQLInvalidAuthorizationSpecException sqlException) {
+					
+					JOptionPane.showMessageDialog(NewPredictionFrame.this,
+							"Database Authentication failed!"
+							+ "\nNo connection could be made to the database due to incorrect authentication details."
+									+ "\n"
+							+ "\nYou will now be asked to re-perform setup.",
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+					
+					int choice = showAuthenticationDialog(NewPredictionFrame.this);
+					
+					if(choice == 0) {
+						PropertiesSetupFrame propFrame = new PropertiesSetupFrame();
+						NewPredictionFrame.this.dispose();
+						propFrame.setVisible(true);
+					}
+					else {
+						System.exit(ABORT);
+					}
+					
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(NewPredictionFrame.this,
+							e.getMessage(),
+							"Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				
+			}
+		});
+		
+		btnSave.setBounds(475, 415, 89, 23);
+		btnSave.setVisible(false);
+		contentPane.add(btnSave);
+		
 		JButton btnRunNew = new JButton("Run New Prediction");
 		btnRunNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
+				WaitDialog waitDialog = new WaitDialog();
+				
+				waitDialog.setVisible(true);
 				
 				try {
 					PythonLinkLogic pyLogic = new PythonLinkLogic();
@@ -146,10 +248,12 @@ public class NewPredictionFrame extends JFrame {
 
 		            tblOutput.setModel(new DefaultTableModel(tableContent, columnNames));
 		            
+		            waitDialog.setVisible(false);
 		            tblOutput.setVisible(true);
 		            panel.setVisible(false);
 		            panel.setEnabled(false);
 		            scrollPane.setVisible(true);
+		            btnSave.setVisible(true);
 					
 				}
 				catch(IOException ioException) {
@@ -218,5 +322,25 @@ public class NewPredictionFrame extends JFrame {
 		});
 		btnBack.setBounds(10, 415, 89, 23);
 		contentPane.add(btnBack);
+	}
+	
+private static int showAuthenticationDialog(NewPredictionFrame frame) {
+		
+		//Custom button text
+		Object[] options = {"Continue",
+		                    "Later (Exit)"
+		                    };
+		int choice = JOptionPane.showOptionDialog(frame,
+		    "Database authentication details are required.\n"
+		    + "\n"
+		    + "Continue setup?",
+		    "Setup Not Complete",
+		    JOptionPane.YES_NO_CANCEL_OPTION,
+		    JOptionPane.WARNING_MESSAGE,
+		    null,
+		    options,
+		    options[0]);
+		
+		return choice;
 	}
 }

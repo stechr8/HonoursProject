@@ -47,8 +47,6 @@ public class PythonLinkLogic {
 				Double dblLine = Double.parseDouble(line) * 100;
 				predictionArrayList.add(decFormat.format(dblLine));
 				
-				System.out.println(dblLine);
-				
 			}
 			return predictionArrayList;
 			
