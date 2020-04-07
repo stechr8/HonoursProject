@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 from numpy import array
 from numpy import mean
 import sys
+from future.backports.test.support import verbose
 
 # A utility method to create a tf.data dataset from a Pandas Dataframe
 def df_to_dataset(dataframe, shuffle=True, batch_size=32):
@@ -36,12 +37,11 @@ data = pd.read_csv(sys.argv[2])
 
 
 pd.set_option('display.max_rows', None)
-#print(data)
 
 #######READ IN PREDICTION CODE##########
 pdf = pd.read_csv(sys.argv[1])
-#pd.set_option('max_columns', None)
-#pd.set_option('max_rows', None)
+pd.set_option('max_columns', None)
+pd.set_option('max_rows', None)
 
 #change null values to -1
 pdf[['Agent', 'Company']] = pdf[['Agent', 'Company']].fillna(-1)
@@ -160,44 +160,25 @@ for header in ['LeadTime', 'ArrivalDateWeekNumber', 'StaysInWeekendNights',
 feature_layer = tf.keras.layers.DenseFeatures(feature_columns)
 
 
+es = tf.keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1)
 
-avg_acc_list = list()
-avg_loss_list = list()
-
-for i in range(1):
-
-    model = tf.keras.Sequential([
+model = tf.keras.Sequential([
     feature_layer,
   layers.Dense(16, input_dim=14, activation='relu'),
   layers.Dense(16, activation='relu'),
   layers.Dense(1, activation='sigmoid')
   ])
 
-    model.compile(optimizer='adam',
+model.compile(optimizer='adam',
         loss='binary_crossentropy',
         metrics=['accuracy'])
 
-    history = model.fit(train_ds,
+history = model.fit(train_ds,
         validation_data=val_ds,
-        epochs=10, verbose=0)
+        epochs=10, callbacks=[es], verbose=0
+        )
+
     
-    avg_acc_list.append(history.history['val_accuracy'][-1])
-    avg_loss_list.append(history.history['val_loss'][-1])
-
-plt.plot(avg_acc_list)    
-plt.title('Model accuracy')
-plt.ylabel('Validation Accuracy')
-plt.xlabel('Iteration')
-
-#plt.show()
-
-plt.plot(avg_loss_list)    
-plt.title('Model loss')
-plt.ylabel('Validation Loss')
-plt.xlabel('Iteration')
-
-#plt.show()
-
 print(model.predict_proba(pset, batch_size=None))
 
 

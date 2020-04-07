@@ -17,6 +17,8 @@ public class PythonLinkLogic {
 		Process process;
 		ArrayList<String> predictionArrayList = new ArrayList<String>();
 		
+		//sort through directories by starting at the location of this class
+		
 		URL main = PythonLinkLogic.class.getResource("PythonLinkLogic.class");
 		File javaFile = new File(main.getPath());
 
@@ -25,23 +27,29 @@ public class PythonLinkLogic {
 		String binFolderPath = javaFileFolderPath.substring(0,javaFileFolderPath.lastIndexOf(File.separator));
 		String homeFileFolderPath = binFolderPath.substring(0,binFolderPath.lastIndexOf(File.separator));
 		
+		//append the desired directories and files
+		
 		String pythonFilePath = homeFileFolderPath + "\\ModelFolder\\Main.py";
 		String csvTrainPath = homeFileFolderPath + "\\ModelFolder\\H2Clean.csv";
 		
 		try{
 			
+			//construct process with necessary arguments to run Python model via command line
 			ProcessBuilder pb = new ProcessBuilder("python", pythonFilePath, csvPath, csvTrainPath);
 			process = pb.start();
 			
+			//construct BufferedReader to read output from Python application
 			InputStream stdout = process.getInputStream();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stdout,StandardCharsets.UTF_8));
 			
+			//format output to 2 decimal places
 			DecimalFormat decFormat = new DecimalFormat("#.##");
 			decFormat.setRoundingMode(RoundingMode.HALF_UP);
 			
 			String line = "";
 			while((line = reader.readLine()) != null){
 				
+				//read in the Python output and format it
 				line = line.replaceAll("[\\[\\]]", "");
 				line = line.trim();
 				Double dblLine = Double.parseDouble(line) * 100;

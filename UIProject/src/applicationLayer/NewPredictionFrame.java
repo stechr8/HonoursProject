@@ -160,7 +160,7 @@ public class NewPredictionFrame extends JFrame {
 				JOptionPane.showMessageDialog(NewPredictionFrame.this,
 						"File Saved to '" + directory + "'",
 						"Success!",
-						JOptionPane.ERROR_MESSAGE);
+						JOptionPane.PLAIN_MESSAGE);
 				
 				} 
 				catch(IOException ioException) {
