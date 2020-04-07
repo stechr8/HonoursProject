@@ -141,7 +141,7 @@ feature_columns.append(arrivalMonth_one_hot)
 
 
 countryNames = feature_column.categorical_column_with_vocabulary_file(
-    'Country', 'E:/stech/Documents/Uni/4thYear/Honours/CountryNames.csv', vocabulary_size=None, dtype=tf.dtypes.string,
+    'Country', sys.argv[3], vocabulary_size=None, dtype=tf.dtypes.string,
     default_value=None, num_oov_buckets=0
 )
 

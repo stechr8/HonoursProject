@@ -31,11 +31,12 @@ public class PythonLinkLogic {
 		
 		String pythonFilePath = homeFileFolderPath + "\\ModelFolder\\Main.py";
 		String csvTrainPath = homeFileFolderPath + "\\ModelFolder\\H2Clean.csv";
+		String countryFilePath = homeFileFolderPath + "\\ModelFolder\\CountryNames.csv";
 		
 		try{
 			
 			//construct process with necessary arguments to run Python model via command line
-			ProcessBuilder pb = new ProcessBuilder("python", pythonFilePath, csvPath, csvTrainPath);
+			ProcessBuilder pb = new ProcessBuilder("python", pythonFilePath, csvPath, csvTrainPath, countryFilePath);
 			process = pb.start();
 			
 			//construct BufferedReader to read output from Python application
