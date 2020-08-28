@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/mysql-connector-java-8.0.18.jar"/>
+	<classpathentry kind="lib" path="lib/tink-1.3.0-rc3.jar"/>
+	<classpathentry kind="lib" path="lib/protobuf-java-3.11.4.jar"/>
+	<classpathentry kind="lib" path="lib/tink-gcpkms-1.3.0-rc3.jar"/>
+	<classpathentry kind="lib" path="lib/java-json.jar"/>
+	<classpathentry kind="lib" path="lib/appengine-gcs-client-0.8.jar"/>
+	<classpathentry kind="lib" path="lib/com.fasterxml.jackson.core.jar"/>
+	<classpathentry kind="lib" path="lib/google-api-services-cloudkms-v1-rev104-1.25.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/google-api-services-cloudkms-v1-rev104-1.25.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/google-api-services-cloudkms-v1-rev104-1.25.0.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/checker-compat-qual-2.5.5.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/commons-codec-1.11.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/error_prone_annotations-2.3.4.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/failureaccess-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/google-http-client-1.34.2.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/google-http-client-jackson2-1.34.2.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/grpc-context-1.22.1.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/guava-28.2-android.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/httpclient-4.5.11.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/httpcore-4.4.13.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/j2objc-annotations-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/jackson-core-2.10.2.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/jsr305-3.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/opencensus-api-0.24.0.jar"/>
+	<classpathentry kind="lib" path="lib/google-http-client-jackson2/opencensus-contrib-http-util-0.24.0.jar"/>
+	<classpathentry kind="lib" path="lib/google-api-client-1.30.8.jar"/>
+	<classpathentry kind="lib" path="lib/spring-security-crypto-5.2.2.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/opencsv-5.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
